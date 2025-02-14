@@ -494,3 +494,5 @@ $RECYCLE.BIN/
 .dockerignore  
 docker-compose.override.yml  
 **/docker-entrypoint-initdb.d/*  
+
+obj/
