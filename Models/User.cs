@@ -1,22 +1,16 @@
+namespace Assignment1.Models;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
-
 public class User : IdentityUser
 {
-    [Key]
-    public string Email { get; set; } // Email as primary key
-    
     [Required]
-    public string Password { get; set; } // Hashed password
+    public string FirstName { get; set; } = string.Empty;
 
     [Required]
-    public string FirstName { get; set; }
+    public string LastName { get; set; } = string.Empty;
 
     [Required]
-    public string LastName { get; set; }
+    public string Role { get; set; } = "Contributor";
 
-    [Required]
-    public string Role { get; set; } // "admin" or "contributor"
-
-    public bool Approved { get; set; } = false; // Default false (admin must approve)
+    public bool Approved { get; set; } = false;
 }

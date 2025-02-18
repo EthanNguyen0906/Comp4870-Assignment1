@@ -1,3 +1,4 @@
+namespace Assignment1.Models;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,10 +9,10 @@ public class Article
     public int ArticleId { get; set; }
 
     [Required]
-    public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
 
     [Required]
-    public string Body { get; set; } // Allows HTML content
+    public string Body { get; set; } = string.Empty;// Allows HTML content
 
     public DateTime CreateDate { get; set; } = DateTime.UtcNow;
 
@@ -23,7 +24,7 @@ public class Article
 
     [Required]
     [ForeignKey("User")]
-    public string ContributorUsername { get; set; }
+    public string ContributorUsername { get; set; } = string.Empty;
 
     public User Contributor { get; set; } // Navigation property
 }
