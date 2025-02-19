@@ -1,5 +1,5 @@
 @model Assignment1.Models.Article
-
+@inject UserManager<User> UserManager
 @{
     ViewData["Title"] = Model.Title;
 }
@@ -21,11 +21,15 @@
 <p><strong>End Date:</strong> @Model.EndDate.ToString("MMMM dd, yyyy")</p>
 
 <div class="mt-3">
-    @if (User.Identity.IsAuthenticated && User.Identity.Name == Model.ContributorUsername)
-    {
-        <a href="@Url.Action("Edit", "Article", new { id = Model.ArticleId })" class="btn btn-warning ms-2">Edit</a>
-        <a href="@Url.Action("Delete", "Article", new { id = Model.ArticleId })" class="btn btn-danger ms-2">Delete</a>
+    @if (User.Identity.IsAuthenticated){
+        var user = await UserManager.GetUserAsync(User);
+        if (User.Identity.Name == Model.ContributorUsername || user.Role == "Admin")
+        {
+            <a href="@Url.Action("Edit", "Article", new { id = Model.ArticleId })" class="btn btn-warning ms-2">Edit</a>
+            <a href="@Url.Action("Delete", "Article", new { id = Model.ArticleId })" class="btn btn-danger ms-2">Delete</a>
+        }
     }
+
     <a href="@Url.Action("Index", "Article")" class="btn btn-primary">Back to Home</a>
 </div>
 
