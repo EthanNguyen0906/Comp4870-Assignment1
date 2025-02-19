@@ -27,7 +27,8 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
     options.Password.RequiredUniqueChars = 0;
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
-.AddDefaultTokenProviders();
+.AddDefaultTokenProviders()
+.AddRoles<IdentityRole>(); 
 
 // Other services
 builder.Services.AddTransient<IEmailSender, EmailSender>();
@@ -56,59 +57,6 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "areas",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
-//app.MapRazorPages();
-
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    try
-    {
-        var userManager = services.GetRequiredService<UserManager<User>>();
-
-        if (userManager == null)
-{
-    throw new InvalidOperationException("UserManager<User> is NOT registered in the DI container.");
-}
-        
-        // Seed Admin
-        var adminEmail = "a@a.a";
-        if (await userManager.FindByEmailAsync(adminEmail) == null)
-        {
-            var adminUser = new User
-            {
-                Email = adminEmail,
-                FirstName = "Admin",
-                LastName = "User",
-                Role = "Admin",
-                Approved = true
-            };
-            await userManager.CreateAsync(adminUser, "P@$$w0rd");
-        }
-
-        // Seed Contributor
-        var contributorEmail = "c@c.c";
-        if (await userManager.FindByEmailAsync(contributorEmail) == null)
-        {
-            var contributorUser = new User
-            {
-                Email = contributorEmail,
-                FirstName = "Contributor",
-                LastName = "User",
-                Role = "Contributor",
-                Approved = true
-            };
-            await userManager.CreateAsync(contributorUser, "P@$$w0rd");
-        }
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred seeding users");
-    }
-}
-
-var serviceProvider = builder.Services.BuildServiceProvider();
 
 
 

@@ -40,8 +40,8 @@ namespace Assignment1.Areas.Identity.Pages.Account
         {
             _userManager = userManager;
             _userStore = userStore;
-            _emailStore = (IUserEmailStore<User>)GetEmailStore();
             _signInManager = signInManager;
+            _emailStore = (IUserEmailStore<User>)GetEmailStore();
             _logger = logger;
             _emailSender = emailSender;
         }
@@ -83,6 +83,7 @@ namespace Assignment1.Areas.Identity.Pages.Account
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            Input = new InputModel(); 
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)

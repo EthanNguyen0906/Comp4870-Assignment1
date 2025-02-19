@@ -38,20 +38,35 @@ namespace Assignment1.Controllers
 
         public IActionResult Register()
         {
-            return View();
+            var model = new RegisterViewModel(); 
+            return View(model);
         }
 
+
         [HttpPost]
-        public async Task<IActionResult> Register(string email, string password)
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            var user = new User { UserName = email, Email = email };
-            var result = await _userManager.CreateAsync(user, password);
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+           
+            var user = new User { UserName = model.Input.Email, Email = model.Input.Email, FirstName = model.Input.FirstName, LastName = model.Input.LastName };
+            var result = await _userManager.CreateAsync(user, model.Input.Password);
+
             if (result.Succeeded)
             {
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 return RedirectToAction("Index", "Home");
             }
-            return View();
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return View(model);
         }
 
         [HttpPost]

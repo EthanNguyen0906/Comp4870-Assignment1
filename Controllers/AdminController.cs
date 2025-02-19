@@ -47,7 +47,6 @@ public class AdminController : Controller
         return View(users);
     }
 
-    // POST: /Admin/Approve
     [HttpPost]
     public async Task<IActionResult> Approve(string id, string filter, int page)
     {
@@ -64,7 +63,6 @@ public class AdminController : Controller
         return RedirectToAction("Admin", new { filter, page });
     }
 
-    // POST: /Admin/ChangeRole
     [HttpPost]
     public async Task<IActionResult> ChangeRole(string id, string filter, int page)
     {
@@ -74,14 +72,12 @@ public class AdminController : Controller
             return NotFound();
         }
 
-        // Toggle the user's role (customize this logic as needed)
         user.Role = user.Role == "Contributor" ? "Admin" : "Contributor";
         await _userManager.UpdateAsync(user);
 
         return RedirectToAction("Admin", new { filter, page });
     }
 
-    // POST: /Admin/Delete
     [HttpPost]
     public async Task<IActionResult> Delete(string id, string filter, int page)
     {

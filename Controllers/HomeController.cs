@@ -16,8 +16,13 @@ public class HomeController : Controller
             _userManager = userManager;
         }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
+        if (User.Identity.IsAuthenticated)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            ViewBag.Approved = user?.Approved ?? false;
+        }
         return View();
     }
 
