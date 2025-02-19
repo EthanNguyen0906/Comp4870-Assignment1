@@ -30,10 +30,16 @@
 <div class="mt-3">
     @if (User.Identity.IsAuthenticated){
         var user = await UserManager.GetUserAsync(User);
+        
         if (User.Identity.Name == Model.ContributorUsername || user.Role == "Admin")
         {
             <a href="@Url.Action("Edit", "Article", new { id = Model.ArticleId })" class="btn btn-warning ms-2">Edit</a>
-            <a href="@Url.Action("Delete", "Article", new { id = Model.ArticleId })" class="btn btn-danger ms-2">Delete</a>
+            <form method="post" asp-controller="Article" asp-action="Delete" asp-route-id="@Model.ArticleId" class="d-inline">
+            <button type="submit" class="btn btn-danger ms-2">
+            Delete
+            </button>
+</form>
+
         }
     }
 </div>

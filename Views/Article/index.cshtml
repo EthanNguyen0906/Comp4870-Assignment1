@@ -17,6 +17,17 @@
     }
     </div>
 
+      <div class="row mb-4">
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div class="col">
+                <a asp-controller="Article" asp-action="UserRecords" class="btn btn-primary btn-lg shadow-sm">
+                    <i class="bi bi-file-earmark-text me-2"></i> Published Articles
+                </a>
+            </div>
+        }
+    </div>
+
     <div class="row">
         @foreach (var article in Model)
         {

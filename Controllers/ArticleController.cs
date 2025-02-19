@@ -91,5 +91,102 @@ namespace Assignment1.Controllers
             return View(article);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> UserRecords()
+        {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+        {
+            return Unauthorized();
+        }
+
+        var userArticles = await _context.Articles
+        .Where(a => a.ContributorUsername == user.UserName) // Only articles by the logged-in user
+        .ToListAsync();
+
+        return View(userArticles);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+        var article = await _context.Articles.FirstOrDefaultAsync(a => a.ArticleId == id);
+
+        if (article == null)
+        {
+        return NotFound();
+        }
+
+        // Ensure only the author can edit
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null || article.ContributorUsername != user.UserName)
+        {
+        return Forbid(); // Prevent unauthorized editing
+        }
+
+        return View(article);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(Article model)
+        {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        var article = await _context.Articles.FirstOrDefaultAsync(a => a.ArticleId == model.ArticleId);
+        if (article == null)
+        {
+            return NotFound();
+        }
+
+        // Ensure only the original author can update
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null || article.ContributorUsername != user.UserName)
+        {
+            return Forbid(); // Prevent unauthorized updates
+        }
+
+        // Update article fields
+        article.Title = model.Title;
+        article.Body = model.Body;
+        article.StartDate = model.StartDate;
+        article.EndDate = model.EndDate;
+
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction("UserRecords"); 
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+        var article = await _context.Articles.FirstOrDefaultAsync(a => a.ArticleId == id);
+
+        if (article == null)
+        {
+            return NotFound();
+        }
+
+        // Ensure only the author can delete
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null || article.ContributorUsername != user.UserName)
+        {
+            return Forbid(); 
+        }
+
+        _context.Articles.Remove(article);
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction("UserRecords");
+}
+
+
+
+
+
+
     }
 }
