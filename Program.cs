@@ -56,6 +56,50 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var userManager = services.GetRequiredService<UserManager<User>>();
+        
+        // Seed Admin
+        var adminEmail = "a@a.a";
+        if (await userManager.FindByEmailAsync(adminEmail) == null)
+        {
+            var adminUser = new User
+            {
+                Email = adminEmail,
+                FirstName = "Admin",
+                LastName = "User",
+                Role = "Admin",
+                Approved = true
+            };
+            await userManager.CreateAsync(adminUser, "P@$$w0rd");
+        }
+
+        // Seed Contributor
+        var contributorEmail = "c@c.c";
+        if (await userManager.FindByEmailAsync(contributorEmail) == null)
+        {
+            var contributorUser = new User
+            {
+                Email = contributorEmail,
+                FirstName = "Contributor",
+                LastName = "User",
+                Role = "Contributor",
+                Approved = true
+            };
+            await userManager.CreateAsync(contributorUser, "P@$$w0rd");
+        }
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred seeding users");
+    }
+}
+
 app.Run();
 
 public class EmailSender : IEmailSender

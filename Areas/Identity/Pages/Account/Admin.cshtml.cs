@@ -10,10 +10,12 @@ namespace Assignment1.Areas.Identity.Pages.Account
     public class AdminModel : PageModel
     {
         private readonly UserManager<User> _userManager;
+          private readonly SignInManager<User> _signInManager;
 
-        public AdminModel(UserManager<User> userManager)
+        public AdminModel(UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         public List<UserViewModel> Users { get; set; } = new();
@@ -79,6 +81,8 @@ namespace Assignment1.Areas.Identity.Pages.Account
 
             user.Role = user.Role == "Contributor" ? "Admin" : "Contributor";
             await _userManager.UpdateAsync(user);
+           
+            await _signInManager.RefreshSignInAsync(user);
             return RedirectToPage(new { filter = Filter, currentPage = CurrentPage });
         }
 
