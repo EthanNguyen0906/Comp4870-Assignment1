@@ -5,15 +5,18 @@ using Assignment1.Models;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Assignment1.Data;
 
 public class AdminController : Controller
 {
     private readonly UserManager<User> _userManager;
     private const int PageSize = 20;
+    private readonly ApplicationDbContext _context;
 
-    public AdminController(UserManager<User> userManager)
+    public AdminController(UserManager<User> userManager, ApplicationDbContext context)
     {
         _userManager = userManager;
+        _context = context;
     }
 
     // Display user list with filtering and pagination
@@ -86,6 +89,10 @@ public class AdminController : Controller
         {
             return NotFound();
         }
+
+        var articles = _context.Articles.Where(a => a.ContributorUsername == user.UserName).ToList();
+        _context.Articles.RemoveRange(articles);
+        await _context.SaveChangesAsync();
 
         await _userManager.DeleteAsync(user);
         return RedirectToAction("Admin", new { filter, page });
