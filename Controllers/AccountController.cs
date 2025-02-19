@@ -27,6 +27,20 @@ namespace Assignment1.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(string email, string password)
         {
+            var user = await _userManager.FindByEmailAsync(email);
+    
+            if (user == null)
+            {
+                ModelState.AddModelError("", "Invalid login attempt.");
+                return View();
+            }
+            
+            if (!user.Approved)
+            {
+                ModelState.AddModelError("", "Your account has not been approved yet.");
+                return View();
+            }
+
             var result = await _signInManager.PasswordSignInAsync(email, password, false, false);
             if (result.Succeeded)
             {
@@ -57,7 +71,6 @@ namespace Assignment1.Controllers
 
             if (result.Succeeded)
             {
-                await _signInManager.SignInAsync(user, isPersistent: false);
                 return RedirectToAction("Index", "Article");
             }
 
