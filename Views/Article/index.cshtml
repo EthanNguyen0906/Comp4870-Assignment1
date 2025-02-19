@@ -34,8 +34,18 @@
                         @if (article.Body.Length > 100)
                         {
                             <a asp-controller="Article" asp-action="Display" asp-route-id="@article.ArticleId">more...</a>
-                        }
+                        } 
                     </p>
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-end">
+                            @if (article.Body.Length < 100)
+                            {
+                                <a asp-controller="Article" asp-action="Display" asp-route-id="@article.ArticleId" class="btn btn-info">
+                                    Display in full view
+                                </a>
+                            }
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
