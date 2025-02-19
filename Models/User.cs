@@ -14,3 +14,4 @@ public class User : IdentityUser
 
     public bool Approved { get; set; } = false;
 }
+
