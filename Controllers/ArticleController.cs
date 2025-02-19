@@ -101,7 +101,7 @@ namespace Assignment1.Controllers
         }
 
         var userArticles = await _context.Articles
-        .Where(a => a.ContributorUsername == user.UserName) // Only articles by the logged-in user
+        .Where(a => a.ContributorUsername == user.UserName) 
         .ToListAsync();
 
         return View(userArticles);
@@ -121,7 +121,7 @@ namespace Assignment1.Controllers
         var user = await _userManager.GetUserAsync(User);
         if (user == null || article.ContributorUsername != user.UserName)
         {
-        return Forbid(); // Prevent unauthorized editing
+        return Forbid(); 
         }
 
         return View(article);
@@ -145,10 +145,10 @@ namespace Assignment1.Controllers
         var user = await _userManager.GetUserAsync(User);
         if (user == null || article.ContributorUsername != user.UserName)
         {
-            return Forbid(); // Prevent unauthorized updates
+            return Forbid();
         }
 
-        // Update article fields
+   
         article.Title = model.Title;
         article.Body = model.Body;
         article.StartDate = model.StartDate;
