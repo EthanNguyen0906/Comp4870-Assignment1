@@ -30,7 +30,7 @@ namespace Assignment1.Controllers
             var result = await _signInManager.PasswordSignInAsync(email, password, false, false);
             if (result.Succeeded)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Article");
             }
             ModelState.AddModelError("", "Invalid login attempt.");
             return View();
@@ -58,12 +58,20 @@ namespace Assignment1.Controllers
             if (result.Succeeded)
             {
                 await _signInManager.SignInAsync(user, isPersistent: false);
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Article");
             }
 
             foreach (var error in result.Errors)
             {
-                ModelState.AddModelError(string.Empty, error.Description);
+                if (error.Code.Contains("Password", StringComparison.OrdinalIgnoreCase) 
+                    || error.Description.Contains("password", StringComparison.OrdinalIgnoreCase))
+                {
+                    ModelState.AddModelError("Input.Password", error.Description);
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
             }
 
             return View(model);
@@ -73,7 +81,7 @@ namespace Assignment1.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Article");
         }
     }
 }
