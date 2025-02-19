@@ -21,6 +21,22 @@ namespace Assignment1.Controllers
         }
 
 
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                ViewBag.Approved = user?.Approved ?? false;
+            }
+            var articles = await _context.Articles
+                .Include(a => a.Contributor)
+                .ToListAsync();
+            return View(articles);
+        }
+
+
         [HttpGet]
         public IActionResult Create()
         {
@@ -49,7 +65,7 @@ namespace Assignment1.Controllers
                 StartDate = model.StartDate,
                 EndDate = model.EndDate,
                 CreateDate = DateTime.UtcNow,
-                ContributorUsername =  model.ContributorUsername, 
+                ContributorUsername = user.UserName,
                 Contributor = user
             };
 
@@ -59,6 +75,7 @@ namespace Assignment1.Controllers
             return RedirectToAction("Display", "Article", new { id = article.ArticleId });
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Display(int id)
         {

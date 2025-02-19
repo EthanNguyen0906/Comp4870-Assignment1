@@ -20,4 +20,13 @@
 <p><strong>Start Date:</strong> @Model.StartDate.ToString("MMMM dd, yyyy")</p>
 <p><strong>End Date:</strong> @Model.EndDate.ToString("MMMM dd, yyyy")</p>
 
-<a href="@Url.Action("Index", "Home")" class="btn btn-primary">Back to Home</a>
+<div class="mt-3">
+    @if (User.Identity.IsAuthenticated && User.Identity.Name == Model.ContributorUsername)
+    {
+        <a href="@Url.Action("Edit", "Article", new { id = Model.ArticleId })" class="btn btn-warning ms-2">Edit</a>
+        <a href="@Url.Action("Delete", "Article", new { id = Model.ArticleId })" class="btn btn-danger ms-2">Delete</a>
+    }
+    <a href="@Url.Action("Index", "Article")" class="btn btn-primary">Back to Home</a>
+</div>
+
+

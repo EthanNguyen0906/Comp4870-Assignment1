@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Assignment1.Data; // Fixed namespace
 using Assignment1.Models;
 
+//P@$$w0rd
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure DbContext
@@ -56,7 +57,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "areas",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Article}/{action=Index}/{id?}");
 
 
 

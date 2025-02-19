@@ -1,0 +1,43 @@
+@model IEnumerable<Assignment1.Models.Article>
+@{
+    ViewData["Title"] = "All Articles";
+}
+
+<h1>All Articles</h1>
+
+<div class="row mb-4">
+    @if (User.Identity.IsAuthenticated && ViewBag.Approved)
+    {
+        <div class="col text-end">
+            <a asp-controller="Article" asp-action="Create" class="btn btn-success btn-lg shadow-sm">
+                <i class="bi bi-plus-circle-fill me-2"></i> Create Article
+            </a>
+        </div>
+    }
+</div>
+
+<div class="row">
+    @foreach (var article in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">@article.Title</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        @article.ContributorUsername, @article.CreateDate.ToString("MMMM dd, yyyy")
+                    </h6>
+                    <p class="card-text">
+                        @{
+                            var excerpt = article.Body.Length > 100 ? article.Body.Substring(0, 100) : article.Body;
+                        }
+                        @excerpt
+                        @if (article.Body.Length > 100)
+                        {
+                            <a asp-controller="Article" asp-action="Display" asp-route-id="@article.ArticleId">more...</a>
+                        }
+                    </p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
