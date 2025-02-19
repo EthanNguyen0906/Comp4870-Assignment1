@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using Assignment1.Models;
 
 namespace Assignment1.Controllers;
@@ -7,11 +8,13 @@ namespace Assignment1.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly UserManager<User> _userManager;
 
-    public HomeController(ILogger<HomeController> logger)
-    {
-        _logger = logger;
-    }
+     public HomeController(ILogger<HomeController> logger, UserManager<User> userManager)
+        {
+            _logger = logger;
+            _userManager = userManager;
+        }
 
     public IActionResult Index()
     {

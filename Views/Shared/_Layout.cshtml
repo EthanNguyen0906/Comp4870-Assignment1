@@ -1,5 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using System.Security.Claims
+@inject UserManager<User> UserManager
+@inject SignInManager<User> SignInManager
 <!DOCTYPE html>
 <html lang="en">
 
@@ -31,15 +33,17 @@
                         </li>
                        @if (User.Identity.IsAuthenticated)
                         {
-                            @if (User.IsInRole("Admin"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Admin">Admin</a>
-                                </li>
-                            }
+                            var user = await UserManager.GetUserAsync(User);
+                            if (user != null && user.Role == "Admin") // Ensure role exists in User model
+                                {
+                                    <li class="nav-item">
+                                            <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Admin</a>
+                                    </li>
+                                }
                         }
                     </ul>
-                    <partial name="_LoginPartial" />
+                    <partial name="_LoginPartial" /> 
+
                 </div>
             </div>
         </nav>

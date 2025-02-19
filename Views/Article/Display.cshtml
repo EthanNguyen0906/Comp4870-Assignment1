@@ -1,0 +1,23 @@
+@model Assignment1.Models.Article
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<h2>@Model.Title</h2>
+
+<p><strong>By:</strong> @Model.ContributorUsername</p>
+<p><strong>Published on:</strong> @Model.CreateDate.ToString("MMMM dd, yyyy")</p>
+
+<hr>
+
+<div>
+    <p>@Html.Raw(Model.Body)</p> <!-- Allows HTML content -->
+</div>
+
+<hr>
+
+<p><strong>Start Date:</strong> @Model.StartDate.ToString("MMMM dd, yyyy")</p>
+<p><strong>End Date:</strong> @Model.EndDate.ToString("MMMM dd, yyyy")</p>
+
+<a href="@Url.Action("Index", "Home")" class="btn btn-primary">Back to Home</a>

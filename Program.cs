@@ -9,12 +9,15 @@ var builder = WebApplication.CreateBuilder(args);
 // Configure DbContext
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
     ?? throw new InvalidOperationException("Connection string not found.");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options => 
     options.UseSqlite(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+
+
 // Configure Identity with relaxed password rules
-builder.Services.AddDefaultIdentity<User>(options => 
+builder.Services.AddIdentity<User, IdentityRole>(options => 
 {
     options.Password.RequireDigit = false;
     options.Password.RequireLowercase = false;
@@ -29,7 +32,6 @@ builder.Services.AddDefaultIdentity<User>(options =>
 // Other services
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddAuthorization();
-builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -52,9 +54,10 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-    name: "default",
+    name: "areas",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-app.MapRazorPages();
+
+//app.MapRazorPages();
 
 using (var scope = app.Services.CreateScope())
 {
@@ -62,6 +65,11 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var userManager = services.GetRequiredService<UserManager<User>>();
+
+        if (userManager == null)
+{
+    throw new InvalidOperationException("UserManager<User> is NOT registered in the DI container.");
+}
         
         // Seed Admin
         var adminEmail = "a@a.a";
@@ -99,6 +107,10 @@ using (var scope = app.Services.CreateScope())
         logger.LogError(ex, "An error occurred seeding users");
     }
 }
+
+var serviceProvider = builder.Services.BuildServiceProvider();
+
+
 
 app.Run();
 

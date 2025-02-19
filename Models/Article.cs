@@ -22,9 +22,8 @@ public class Article
     [Required]
     public DateTime EndDate { get; set; }
 
-    [Required]
     [ForeignKey("User")]
     public string ContributorUsername { get; set; } = string.Empty;
 
-    public User Contributor { get; set; } // Navigation property
+    public User? Contributor { get; set; } // Navigation property
 }
