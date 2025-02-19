@@ -34,10 +34,10 @@
                        @if (User.Identity.IsAuthenticated)
                         {
                             var user = await UserManager.GetUserAsync(User);
-                            if (user != null && user.Role == "Admin") // Ensure role exists in User model
+                            if (user != null && user.Role == "Admin") 
                                 {
                                     <li class="nav-item">
-                                            <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Admin</a>
+                                            <a class="nav-link text-dark" asp-controller="Admin" asp-action="Admin">Admin</a>
                                     </li>
                                 }
                         }
