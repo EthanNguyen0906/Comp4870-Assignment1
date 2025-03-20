@@ -25,14 +25,18 @@ namespace Assignment1.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            if (User.Identity.IsAuthenticated)
+            if (User.Identity!.IsAuthenticated)
             {
                 var user = await _userManager.GetUserAsync(User);
                 ViewBag.Approved = user?.Approved ?? false;
             }
+            var currentDateTime = DateTime.UtcNow;
             var articles = await _context.Articles
-                .Include(a => a.Contributor)
-                .ToListAsync();
+            .Where(a => a.EndDate > currentDateTime) 
+            .Include(a => a.Contributor)
+            .ToListAsync();
+
+
             return View(articles);
         }
 
@@ -65,7 +69,7 @@ namespace Assignment1.Controllers
                 StartDate = model.StartDate,
                 EndDate = model.EndDate,
                 CreateDate = DateTime.UtcNow,
-                ContributorUsername = user.UserName,
+                ContributorUsername = user.UserName!,
                 Contributor = user
             };
 
@@ -79,9 +83,10 @@ namespace Assignment1.Controllers
         [HttpGet]
         public async Task<IActionResult> Display(int id)
         {
+            var currentDateTime = DateTime.UtcNow;
             var article = await _context.Articles
             .Include(a => a.Contributor)
-            .FirstOrDefaultAsync(a => a.ArticleId == id);
+            .FirstOrDefaultAsync(a => a.ArticleId == id && a.EndDate > currentDateTime);
 
             if (article == null)
                 {
@@ -100,9 +105,11 @@ namespace Assignment1.Controllers
             return Unauthorized();
         }
 
+        var currentDate = DateTime.UtcNow;
         var userArticles = await _context.Articles
-        .Where(a => a.ContributorUsername == user.UserName) 
+        .Where(a => a.ContributorUsername == user.UserName && a.EndDate > currentDate) 
         .ToListAsync();
+
 
         return View(userArticles);
         }
@@ -181,7 +188,7 @@ namespace Assignment1.Controllers
         await _context.SaveChangesAsync();
 
         return RedirectToAction("UserRecords");
-}
+        }
 
 
 
